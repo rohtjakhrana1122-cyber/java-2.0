@@ -1,38 +1,38 @@
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
-@WebServlet("/welcome")
-public class WelcomeServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session=req.getSession(false);//do not create session obj if already there
+public class BalancedNumberChecker {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-        String name=(session!=null)?(String) session.getAttribute("userName"):"Guest";
-        String email=(session!=null)?(String) session.getAttribute("userEmail"):"Not Available";
+        // Read input
+        int n = scanner.nextInt();
+        scanner.close();
 
-        Cookie[] cookies= req.getCookies();
-        String cookieUser="Guest";
+        // Convert number to string to process digits by position
+        String numStr = String.valueOf(n);
+ 
+        int sumOdd = 0;
 
-        if(cookies!=null){
-            for(Cookie c:cookies){
-               if(c.getName().equalsIgnoreCase("user")){
-                   URLDecoder.decode(c.getValue(), StandardCharsets.UTF_8.toString());
-               }
+ 
+        int sumEven = 0; 
+
+        // Loop through digits using 1-based indexing
+        for (int i = 0; i < numStr.length(); i++) {
+            int digit = numStr.charAt(i) - '0';
+
+            if ((i + 1) % 2 == 0) {
+                sumEven += digit; // even position (1-based)
+            } else {
+                sumOdd += digit; // odd position (1-based)
             }
-
         }
 
-        resp.setContentType("text/html");
-        PrintWriter out=resp.getWriter();
-        out.println("<h2>Welcome Buddy "+name+"</h2>");
-        out.println("<h2>Your Email "+email+"</h2>");
-
+        // Check if balanced
+        if (sumOdd == sumEven) {
+            System.out.println("Balanced");
+        } else {
+            System.out.println("Not Balanced");
+        }
     }
 }
